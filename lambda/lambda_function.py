@@ -11,7 +11,7 @@ import json
 
 # Set your OpenAI API key
 with open(secret) as f:
-	api_key = f.read().strip()
+    api_key = f.read().strip()
 
 
 logger = logging.getLogger(__name__)
