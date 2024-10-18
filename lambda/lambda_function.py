@@ -8,8 +8,11 @@ import requests
 import logging
 import json
 
+
 # Set your OpenAI API key
-api_key = "YOUR_API_KEY"
+with open(secret) as f:
+	api_key = f.read().strip()
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -23,7 +26,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        speak_output = "Chat G.P.T. mode activated"
+        speak_output = "I am your personal assistant. How can I help you?"
 
         session_attr = handler_input.attributes_manager.session_attributes
         session_attr["chat_history"] = []
@@ -86,7 +89,7 @@ class CancelOrStopIntentHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        speak_output = "Leaving Chat G.P.T. mode"
+        speak_output = "OK. You can ask me anything, anytime. Bye!"
 
         return (
             handler_input.response_builder
@@ -101,7 +104,7 @@ def generate_gpt_response(chat_history, new_question):
         "Content-Type": "application/json"
     }
     url = "https://api.openai.com/v1/chat/completions"
-    messages = [{"role": "system", "content": "You are a helpful assistant. Answer in 50 words or less."}]
+    messages = [{"role": "system", "content": "You are a helpful assistant. You answer in simple English. Answer in 50 words or less."}]
     for question, answer in chat_history[-10:]:
         messages.append({"role": "user", "content": question})
         messages.append({"role": "assistant", "content": answer})
@@ -111,7 +114,7 @@ def generate_gpt_response(chat_history, new_question):
         "model": "gpt-4o-mini",
         "messages": messages,
         "max_tokens": 300,
-        "temperature": 0.5
+        "temperature": 0.7
     }
     try:
         response = requests.post(url, headers=headers, data=json.dumps(data))
