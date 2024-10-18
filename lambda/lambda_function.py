@@ -10,7 +10,7 @@ import json
 
 
 # Set your OpenAI API key
-with open(secret) as f:
+with open("secret") as f:
     api_key = f.read().strip()
 
 
